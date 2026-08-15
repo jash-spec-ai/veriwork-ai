@@ -5,8 +5,7 @@ import Dashboard from "./pages/dashboard";
 import Candidates from "./pages/candidates";
 import Requisitions from "./pages/requisitions";
 import Reports from "./pages/reports";
-import candidateDetail from "./pages/candidateDetail"
-
+import CandidateDetail from "./pages/candidateDetail";
 function App() {
   return (
     <BrowserRouter>
