@@ -1,11 +1,20 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom"
 import "./App.css"
 
+<<<<<<< HEAD
 import Dashboard from "./pages/dashboard";
 import Candidates from "./pages/candidates";
 import Requisitions from "./pages/requisitions";
 import Reports from "./pages/reports";
 import CandidateDetail from "./pages/candidateDetail";
+=======
+import Dashboard from "./pages/Dashboard"
+import Candidates from "./pages/Candidates"
+import Requisitions from "./pages/Requisitions"
+import Reports from "./pages/Reports"
+import CandidateDetail from "./pages/CandidateDetail"
+
+>>>>>>> origin/main
 function App() {
   return (
     <BrowserRouter>
@@ -75,6 +84,10 @@ function App() {
             </Routes>
 
           </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
         </main>
 
       </div>
