@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom"
 import "./App.css"
+import RequisitionDetail from "./pages/RequisitionDetail"
 
 import Dashboard from "./pages/Dashboard"
 import Candidates from "./pages/Candidates"
@@ -58,21 +59,27 @@ function App() {
                 path="/candidates"
                 element={<Candidates />}
               />
+              
 
               <Route
                 path="/requisitions"
                 element={<Requisitions />}
+              />
+              <Route
+                path="/requisitions/:requisitionId"
+                element={<RequisitionDetail />}
               />
 
               <Route
                 path="/reports"
                 element={<Reports />}
               />
-
               <Route
-                path="/candidates/rahul"
+                path="/candidates/:candidateId"
                 element={<CandidateDetail />}
               />
+
+             
 
             </Routes>
 
