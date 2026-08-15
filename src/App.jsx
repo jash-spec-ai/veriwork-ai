@@ -1,11 +1,11 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom"
 import "./App.css"
 
-import dashboard from "./pages/Dashboard"
-import candidates from "./pages/Candidates"
-import requisitions from "./pages/Requisitions"
-import reports from "./pages/Reports"
-import candidateDetail from "./pages/CandidateDetail"
+import Dashboard from "./pages/dashboard";
+import Candidates from "./pages/candidates";
+import Requisitions from "./pages/requisitions";
+import Reports from "./pages/reports";
+import candidateDetail from "./pages/candidateDetail"
 
 function App() {
   return (
