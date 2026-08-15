@@ -1,11 +1,13 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom"
 import "./App.css"
+import RequisitionDetail from "./pages/RequisitionDetail"
 
-import Dashboard from "./pages/dashboard";
-import Candidates from "./pages/candidates";
-import Requisitions from "./pages/requisitions";
-import Reports from "./pages/reports";
-import CandidateDetail from "./pages/candidateDetail";
+import Dashboard from "./pages/Dashboard"
+import Candidates from "./pages/Candidates"
+import Requisitions from "./pages/Requisitions"
+import Reports from "./pages/Reports"
+import CandidateDetail from "./pages/CandidateDetail"
+
 function App() {
   return (
     <BrowserRouter>
@@ -57,10 +59,15 @@ function App() {
                 path="/candidates"
                 element={<Candidates />}
               />
+              
 
               <Route
                 path="/requisitions"
                 element={<Requisitions />}
+              />
+              <Route
+                path="/requisitions/:requisitionId"
+                element={<RequisitionDetail />}
               />
 
               <Route
@@ -68,13 +75,16 @@ function App() {
                 element={<Reports />}
               />
               <Route
-                path="/candidates/rahul"
+                path="/candidates/:candidateId"
                 element={<CandidateDetail />}
               />
+
+             
 
             </Routes>
 
           </div>
+
         </main>
 
       </div>
