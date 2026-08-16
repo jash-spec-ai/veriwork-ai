@@ -44,48 +44,166 @@ const reportData = [
 ]
 
 function getScoreLabel(score) {
-  if (score >= 80) return "Strong Evidence"
-  if (score >= 60) return "Moderate Evidence"
+  if (score >= 80) {
+    return "Strong Evidence"
+  }
+
+  if (score >= 60) {
+    return "Moderate Evidence"
+  }
+
   return "Limited Evidence"
 }
 
 function Reports() {
-  const [statusFilter, setStatusFilter] = useState("All")
-  const [skillFilter, setSkillFilter] = useState("All")
-  const [selectedCandidate, setSelectedCandidate] = useState(null)
+  const [statusFilter, setStatusFilter] =
+    useState("All")
+
+  const [skillFilter, setSkillFilter] =
+    useState("All")
+
+  const [selectedCandidate, setSelectedCandidate] =
+    useState(null)
 
   const filteredRows = useMemo(() => {
     return reportData.filter((row) => {
+
       const statusMatches =
-        statusFilter === "All" || row.status === statusFilter
+        statusFilter === "All" ||
+        row.status === statusFilter
 
       const skillMatches =
-        skillFilter === "All" || row.skill === skillFilter
+        skillFilter === "All" ||
+        row.skill === skillFilter
 
       return statusMatches && skillMatches
     })
   }, [statusFilter, skillFilter])
 
+  const totalCandidates = reportData.length
+
+  const verifiedCandidates =
+    reportData.filter(
+      (candidate) =>
+        candidate.status === "Verified"
+    ).length
+
+  const pendingCandidates =
+    reportData.filter(
+      (candidate) =>
+        candidate.status === "Pending"
+    ).length
+
+  const averageScore =
+    reportData.length > 0
+      ? Math.round(
+          reportData.reduce(
+            (total, candidate) =>
+              total + candidate.score,
+            0
+          ) / reportData.length
+        )
+      : 0
+
+  const exportCSV = () => {
+    const headers = [
+      "Candidate",
+      "Requisition",
+      "Skill",
+      "Score",
+      "Status",
+      "Repositories",
+      "Commits",
+    ]
+
+    const rows = filteredRows.map((row) => [
+      row.candidate,
+      row.requisition,
+      row.skill,
+      row.score,
+      row.status,
+      row.repositories,
+      row.commits,
+    ])
+
+    const csv = [
+      headers,
+      ...rows,
+    ]
+      .map((row) =>
+        row
+          .map((value) =>
+            `"${String(value).replace(
+              /"/g,
+              '""'
+            )}"`
+          )
+          .join(",")
+      )
+      .join("\n")
+
+    const blob = new Blob([csv], {
+      type: "text/csv;charset=utf-8;",
+    })
+
+    const url = URL.createObjectURL(blob)
+
+    const link =
+      document.createElement("a")
+
+    link.href = url
+    link.download =
+      "veriwork-candidate-report.csv"
+
+    document.body.appendChild(link)
+
+    link.click()
+
+    document.body.removeChild(link)
+
+    URL.revokeObjectURL(url)
+  }
+
+  const exportPDF = () => {
+    window.print()
+  }
+
   return (
     <div className="reports-page">
 
       <div className="page-heading">
+
         <div>
-          <h1>Reports & Exports</h1>
+
+          <h1>
+            Reports & Exports
+          </h1>
+
           <p>
-            Review candidate verification results and supporting evidence.
+            Review candidate verification results
+            and supporting evidence.
           </p>
+
         </div>
 
         <div className="report-actions">
-          <button className="secondary-button">
+
+          <button
+            className="secondary-button"
+            onClick={exportCSV}
+          >
             Export CSV
           </button>
 
-          <button className="primary-button">
+          <button
+            className="primary-button"
+            onClick={exportPDF}
+          >
             Export PDF
           </button>
+
         </div>
+
       </div>
 
       <div className="report-filters">
@@ -93,26 +211,49 @@ function Reports() {
         <select
           value={skillFilter}
           onChange={(event) =>
-            setSkillFilter(event.target.value)
+            setSkillFilter(
+              event.target.value
+            )
           }
         >
-          <option value="All">All Skills</option>
-          <option value="Python">Python</option>
+          <option value="All">
+            All Skills
+          </option>
+
+          <option value="Python">
+            Python
+          </option>
+
           <option value="Machine Learning">
             Machine Learning
           </option>
-          <option value="React">React</option>
+
+          <option value="React">
+            React
+          </option>
+
         </select>
 
         <select
           value={statusFilter}
           onChange={(event) =>
-            setStatusFilter(event.target.value)
+            setStatusFilter(
+              event.target.value
+            )
           }
         >
-          <option value="All">All Status</option>
-          <option value="Verified">Verified</option>
-          <option value="Pending">Pending</option>
+          <option value="All">
+            All Status
+          </option>
+
+          <option value="Verified">
+            Verified
+          </option>
+
+          <option value="Pending">
+            Pending
+          </option>
+
         </select>
 
       </div>
@@ -120,35 +261,67 @@ function Reports() {
       <div className="report-stats">
 
         <div className="metric-card">
-          <p className="metric-label">Total Candidates</p>
-          <h2 className="metric-value">148</h2>
+
+          <p className="metric-label">
+            Total Candidates
+          </p>
+
+          <h2 className="metric-value">
+            {totalCandidates}
+          </h2>
+
           <p className="metric-description">
             Included in reports
           </p>
+
         </div>
 
         <div className="metric-card">
-          <p className="metric-label">Verified</p>
-          <h2 className="metric-value">96</h2>
+
+          <p className="metric-label">
+            Verified
+          </p>
+
+          <h2 className="metric-value">
+            {verifiedCandidates}
+          </h2>
+
           <p className="metric-description">
             Verification completed
           </p>
+
         </div>
 
         <div className="metric-card">
-          <p className="metric-label">Pending</p>
-          <h2 className="metric-value">24</h2>
+
+          <p className="metric-label">
+            Pending
+          </p>
+
+          <h2 className="metric-value">
+            {pendingCandidates}
+          </h2>
+
           <p className="metric-description">
             Awaiting candidate action
           </p>
+
         </div>
 
         <div className="metric-card">
-          <p className="metric-label">Average Score</p>
-          <h2 className="metric-value">74/100</h2>
-          <p className="metric-description">
-            Across verified skills
+
+          <p className="metric-label">
+            Average Score
           </p>
+
+          <h2 className="metric-value">
+            {averageScore}/100
+          </h2>
+
+          <p className="metric-description">
+            Across all candidates
+          </p>
+
         </div>
 
       </div>
@@ -156,10 +329,23 @@ function Reports() {
       <section className="report-panel">
 
         <div className="panel-heading">
+
           <div>
-            <h2>Candidate Results</h2>
-            <p>{filteredRows.length} candidates shown</p>
+
+            <h2>
+              Candidate Results
+            </h2>
+
+            <p>
+              {filteredRows.length} candidate
+              {filteredRows.length !== 1
+                ? "s"
+                : ""}{" "}
+              shown
+            </p>
+
           </div>
+
         </div>
 
         <div className="report-table-wrapper">
@@ -167,59 +353,119 @@ function Reports() {
           <table className="report-table">
 
             <thead>
+
               <tr>
-                <th>Candidate</th>
-                <th>Requisition</th>
-                <th>Skill</th>
-                <th>Score</th>
-                <th>Status</th>
-                <th>Evidence</th>
+                <th>
+                  Candidate
+                </th>
+
+                <th>
+                  Requisition
+                </th>
+
+                <th>
+                  Skill
+                </th>
+
+                <th>
+                  Score
+                </th>
+
+                <th>
+                  Status
+                </th>
+
+                <th>
+                  Evidence
+                </th>
               </tr>
+
             </thead>
 
             <tbody>
 
-              {filteredRows.map((row) => (
-                <tr key={row.id}>
+              {filteredRows.length > 0 ? (
 
-                  <td>
-                    <strong>{row.candidate}</strong>
-                  </td>
+                filteredRows.map((row) => (
 
-                  <td>{row.requisition}</td>
+                  <tr key={row.id}>
 
-                  <td>{row.skill}</td>
+                    <td>
+                      <strong>
+                        {row.candidate}
+                      </strong>
+                    </td>
 
-                  <td>
-                    <div className="score-cell">
-                      <strong>{row.score}/100</strong>
-                      <span>
-                        {getScoreLabel(row.score)}
+                    <td>
+                      {row.requisition}
+                    </td>
+
+                    <td>
+                      {row.skill}
+                    </td>
+
+                    <td>
+
+                      <div className="score-cell">
+
+                        <strong>
+                          {row.score}/100
+                        </strong>
+
+                        <span>
+                          {getScoreLabel(
+                            row.score
+                          )}
+                        </span>
+
+                      </div>
+
+                    </td>
+
+                    <td>
+
+                      <span
+                        className={`status-pill ${row.status.toLowerCase()}`}
+                      >
+                        {row.status}
                       </span>
-                    </div>
-                  </td>
 
-                  <td>
-                    <span
-                      className={`status-pill ${row.status.toLowerCase()}`}
-                    >
-                      {row.status}
-                    </span>
-                  </td>
+                    </td>
 
-                  <td>
-                    <button
-                      className="evidence-button"
-                      onClick={() =>
-                        setSelectedCandidate(row)
-                      }
-                    >
-                      View Evidence
-                    </button>
+                    <td>
+
+                      <button
+                        className="evidence-button"
+                        onClick={() =>
+                          setSelectedCandidate(
+                            row
+                          )
+                        }
+                      >
+                        View Evidence
+                      </button>
+
+                    </td>
+
+                  </tr>
+
+                ))
+
+              ) : (
+
+                <tr>
+
+                  <td
+                    colSpan="6"
+                    className="empty-table"
+                  >
+                    No candidates match the
+                    selected filters.
                   </td>
 
                 </tr>
-              ))}
+
+              )}
 
             </tbody>
 
@@ -230,21 +476,33 @@ function Reports() {
       </section>
 
       {selectedCandidate && (
+
         <div
           className="drawer-overlay"
-          onClick={() => setSelectedCandidate(null)}
+          onClick={() =>
+            setSelectedCandidate(null)
+          }
         >
 
           <aside
             className="evidence-drawer"
-            onClick={(event) => event.stopPropagation()}
+            onClick={(event) =>
+              event.stopPropagation()
+            }
           >
 
             <div className="drawer-header">
 
               <div>
-                <h2>Evidence Explorer</h2>
-                <p>{selectedCandidate.candidate}</p>
+
+                <h2>
+                  Evidence Explorer
+                </h2>
+
+                <p>
+                  {selectedCandidate.candidate}
+                </p>
+
               </div>
 
               <button
@@ -261,7 +519,10 @@ function Reports() {
             <div className="drawer-content">
 
               <div className="evidence-score">
-                <span>{selectedCandidate.skill}</span>
+
+                <span>
+                  {selectedCandidate.skill}
+                </span>
 
                 <strong>
                   {selectedCandidate.score}/100
@@ -272,25 +533,39 @@ function Reports() {
                     selectedCandidate.score
                   )}
                 </p>
+
               </div>
 
               <div className="evidence-item">
-                <span>Repositories analyzed</span>
+
+                <span>
+                  Repositories analyzed
+                </span>
+
                 <strong>
                   {selectedCandidate.repositories}
                 </strong>
+
               </div>
 
               <div className="evidence-item">
-                <span>Commits analyzed</span>
+
+                <span>
+                  Commits analyzed
+                </span>
+
                 <strong>
                   {selectedCandidate.commits}
                 </strong>
+
               </div>
 
               <div className="evidence-note">
-                Demo frontend evidence. Your team's backend
-                can replace this data later.
+
+                Demo frontend evidence.
+                Your team's backend can
+                replace this data later.
+
               </div>
 
             </div>
@@ -298,6 +573,7 @@ function Reports() {
           </aside>
 
         </div>
+
       )}
 
     </div>
